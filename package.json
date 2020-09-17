@@ -1,6 +1,6 @@
 {
   "name": "devextreme-query-mongodb",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "Querying a MongoDB collection using DevExtreme data store load parameters",
   "main": "index.js",
   "files": [
@@ -45,12 +45,12 @@
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "chai": "^4.2.0",
-    "eslint": "^6.0.1",
+    "eslint": "^7.9.0",
     "eslint-plugin-promise": "^4.2.1",
-    "mocha": "^6.1.4",
-    "mongodb": "^3.2.7",
-    "nyc": "^14.1.1",
-    "qs": "^6.7.0",
-    "sinon": "^7.3.2"
+    "mocha": "^8.1.3",
+    "mongodb": "^3.6.2",
+    "nyc": "^15.1.0",
+    "qs": "^6.9.4",
+    "sinon": "^9.0.3"
   }
 }
