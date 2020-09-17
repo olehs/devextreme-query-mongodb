@@ -4,12 +4,12 @@ const chai = require('chai');
 const assert = chai.assert;
 const sinon = require('sinon');
 
-const { replaceId, createSummaryQueryExecutor } = require('./utils');
+const { replaceIds, createSummaryQueryExecutor } = require('./utils');
 
 suite('utils', function() {
-  suite('replaceId', function() {
+  suite('replaceIds', function() {
     test('works', function() {
-      assert.deepEqual(replaceId({ _id: { toHexString: () => '42' } }), {
+      assert.deepEqual(replaceIds({ _id: { toHexString: () => '42' } }), {
         _id: '42'
       });
     });

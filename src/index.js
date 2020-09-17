@@ -13,7 +13,7 @@ const {
   createRemoveNestedFieldsPipeline
 } = require('./pipelines');
 const {
-  replaceId,
+  replaceIds,
   createSummaryQueryExecutor,
   merge,
   debug
@@ -85,12 +85,14 @@ function createContext(contextOptions, loadOptions) {
           groupKeyPipeline,
           itemProjection
         ),
-        ...skipTakePipeline
+        ...skipTakePipeline,
+        ...contextOptions.postProcessingPipeline,
+
       ])
       .toArray()
       .then(r =>
         includeDataItems
-          ? r.map(i => ({ ...i, items: i.items.map(replaceId) }))
+          ? r.map(i => ({ ...i, items: contextOptions.replaceIds ? i.items.map(replaceIds) : i.items }))
           : r
       );
 
@@ -183,7 +185,8 @@ function createContext(contextOptions, loadOptions) {
               true,
               nextGroupKeyPipeline
             ),
-            ...createCountPipeline()
+            ...createCountPipeline(),
+            ...contextOptions.postProcessingPipeline,
           ]).then(r => {
             item.count = r;
             return r;
@@ -206,7 +209,8 @@ function createContext(contextOptions, loadOptions) {
                     createGroupFieldName(groupIndex),
                     item.key
                   ),
-                  ...summaryPipeline
+                  ...summaryPipeline,
+                  ...contextOptions.postProcessingPipeline,
                 ])
                 .toArray()
             ).then(r =>
@@ -281,7 +285,8 @@ function createContext(contextOptions, loadOptions) {
                 contextOptions.timezoneOffset
               )
             ),
-            ...createCountPipeline()
+            ...createCountPipeline(),
+            ...contextOptions.postProcessingPipeline,
           ]).then(r => ({ groupCount: r }))
         ];
       } else return [];
@@ -304,7 +309,8 @@ function createContext(contextOptions, loadOptions) {
             .aggregate([
               ...contextOptions.preProcessingPipeline,
               ...completeFilterPipelineDetails.pipeline,
-              ...createSummaryPipeline(loadOptions.totalSummary)
+              ...createSummaryPipeline(loadOptions.totalSummary),
+              ...contextOptions.postProcessingPipeline,
             ])
             .toArray()
             .then(r =>
@@ -347,10 +353,12 @@ function createContext(contextOptions, loadOptions) {
           ...sortPipeline,
           ...skipTakePipeline,
           ...selectPipeline,
-          ...removeNestedFieldsPipeline
+          ...removeNestedFieldsPipeline,
+          ...contextOptions.processingPipeline,
+          ...contextOptions.postProcessingPipeline,
         ])
         .toArray()
-        .then(r => r.map(replaceId))
+        .then(r => contextOptions.replaceIds ? r.map(replaceIds) : r)
         .then(r => ({ data: r }));
 
     // FIXME this function is exactly the same as the one in the group query execution path
@@ -360,7 +368,8 @@ function createContext(contextOptions, loadOptions) {
             getCount(collection, [
               ...contextOptions.preProcessingPipeline,
               ...completeFilterPipelineDetails.pipeline,
-              ...createCountPipeline()
+              ...createCountPipeline(),
+              ...contextOptions.postProcessingPipeline,
             ]).then(r => ({ totalCount: r }))
           ]
         : [];
@@ -372,7 +381,8 @@ function createContext(contextOptions, loadOptions) {
             .aggregate([
               ...contextOptions.preProcessingPipeline,
               ...completeFilterPipelineDetails.pipeline,
-              ...createSummaryPipeline(loadOptions.totalSummary)
+              ...createSummaryPipeline(loadOptions.totalSummary),
+              ...contextOptions.postProcessingPipeline,
             ])
             .toArray()
             .then(r =>
@@ -394,14 +404,16 @@ function createContext(contextOptions, loadOptions) {
 
 function query(collection, loadOptions = {}, options = {}) {
   const standardContextOptions = {
-    replaceIds: true,
+    replaceIds: false,
     summaryQueryLimit: 100,
     // timezone offset for the query, in the form returned by
     // Date.getTimezoneOffset
     timezoneOffset: 0,
-    preProcessingPipeline: []
+    preProcessingPipeline: [],
+    processingPipeline: [],
+    postProcessingPipeline: [],
   };
-  const contextOptions = Object.assign(standardContextOptions, options);
+  const contextOptions = Object.assign({}, standardContextOptions, options);
   const context = createContext(contextOptions, loadOptions);
 
   return loadOptions.group && loadOptions.group.length > 0

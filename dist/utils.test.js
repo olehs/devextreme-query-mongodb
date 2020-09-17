@@ -5,13 +5,13 @@ var assert = chai.assert;
 var sinon = require('sinon');
 
 var _require = require('./utils'),
-    replaceId = _require.replaceId,
+    replaceIds = _require.replaceIds,
     createSummaryQueryExecutor = _require.createSummaryQueryExecutor;
 
 suite('utils', function () {
-  suite('replaceId', function () {
+  suite('replaceIds', function () {
     test('works', function () {
-      assert.deepEqual(replaceId({ _id: { toHexString: function toHexString() {
+      assert.deepEqual(replaceIds({ _id: { toHexString: function toHexString() {
             return '42';
           } } }), {
         _id: '42'

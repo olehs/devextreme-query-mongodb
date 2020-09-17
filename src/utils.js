@@ -1,8 +1,12 @@
 // Mongo doesn't seem to have the ability of simply returning its ids as strings
 // to begin with. Bit of a pita, but hey...
 // We'll replace ids with strings if required.
-const replaceId = item =>
-  item._id ? { ...item, _id: item._id.toHexString() } : item;
+const replaceIds = (item) =>
+  Object.entries(item).reduce(
+    (r, [k, v]) =>
+      v && v.constructor.name === "ObjectID" ? { ...r, [k]: v.toHexString() } : r,
+    item
+  );
 
 // We can apply a limit for summaries calculated per group query. The realistic problem
 // is that if a programmer makes the grid use server-side grouping as well as summaries,
@@ -30,4 +34,4 @@ const debug = (id, f, options = {}) => {
   };
 };
 
-module.exports = { replaceId, createSummaryQueryExecutor, merge, debug };
+module.exports = { replaceIds, createSummaryQueryExecutor, merge, debug };

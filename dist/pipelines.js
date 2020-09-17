@@ -414,7 +414,7 @@ var parseFilter = function parseFilter(element) {
               case 'notcontains':
                 return rval(constructRegex(_fieldName2, '^((?!' + element[2] + ').)*$'), [element[0]]);
               case 'equalsobjectid':
-                return rval(construct(_fieldName2, '$eq', ObjectId(element[2])), [element[0]]);
+                return rval(construct(_fieldName2, '$eq', element[2] === null ? null : ObjectId(element[2])), [element[0]]);
               default:
                 return null;
             }

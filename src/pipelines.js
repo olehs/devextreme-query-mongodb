@@ -431,7 +431,7 @@ const parseFilter = element => {
                   [element[0]]
                 );
               case 'equalsobjectid':
-                return rval(construct(fieldName, '$eq', ObjectId(element[2])), [
+                return rval(construct(fieldName, '$eq', element[2] === null ? null : ObjectId(element[2])), [
                   element[0]
                 ]);
               default:
