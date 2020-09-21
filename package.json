@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/oliversturm/devextreme-query-mongodb.git"
+    "url": "git+https://github.com/olehs/devextreme-query-mongodb.git"
   },
   "keywords": [
     "DevExtreme",
@@ -25,9 +25,9 @@
   "author": "Oliver Sturm <oliver@oliversturm.com>",
   "license": "SEE LICENSE IN LICENSE",
   "bugs": {
-    "url": "https://github.com/oliversturm/devextreme-query-mongodb/issues"
+    "url": "https://github.com/olehs/devextreme-query-mongodb/issues"
   },
-  "homepage": "https://github.com/oliversturm/devextreme-query-mongodb#readme",
+  "homepage": "https://github.com/olehs/devextreme-query-mongodb#readme",
   "engines": {
     "node": ">=7.3"
   },
